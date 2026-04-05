@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peakline Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#09090b;--bg2:#111113;--bg3:#18181b;--bg4:#1c1c1f;--bg5:#222226;
+  --border:#27272a;--border2:#3f3f46;
+  --text:#fafafa;--text2:#a1a1aa;--text3:#52525b;
+  --accent:#6366f1;--accent2:#4f46e5;--accent-bg:rgba(99,102,241,0.1);--accent-border:rgba(99,102,241,0.25);
+  --green:#22c55e;--green-bg:rgba(34,197,94,0.08);--green-border:rgba(34,197,94,0.2);
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.08);--amber-border:rgba(245,158,11,0.2);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.08);--red-border:rgba(239,68,68,0.2);
+  --blue:#3b82f6;--blue-bg:rgba(59,130,246,0.08);
+  --r:8px;--rl:12px;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:'Inter',sans-serif;cursor:pointer}
+input,select,textarea{font-family:'Inter',sans-serif}
+
+/* ── LOGIN ── */
+#loginPage{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);background-image:radial-gradient(ellipse at 50% -20%,rgba(99,102,241,0.12) 0%,transparent 60%)}
+.lcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:40px;width:380px;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:32px}
+.bmark{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff}
+.bname{font-size:14px;font-weight:600;letter-spacing:-.2px}
+.lcard h2{font-size:22px;font-weight:600;letter-spacing:-.5px;margin-bottom:6px}
+.lcard .sub{color:var(--text2);font-size:13px;margin-bottom:28px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;color:var(--text2);margin-bottom:5px;font-weight:500;letter-spacing:.3px;text-transform:uppercase}
+.field input,.field select,.field textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;color:var(--text);font-size:14px;outline:none;transition:border .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.field select option{background:var(--bg3)}
+.field textarea{resize:vertical;min-height:80px}
+.btn-primary{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:11px;font-size:14px;font-weight:600;transition:background .15s}
+.btn-primary:hover{background:var(--accent2)}
+.lerr{color:var(--red);font-size:12px;margin-top:10px;display:none;text-align:center}
+
+/* ── APP SHELL ── */
+#appPage{display:none;flex-direction:column;min-height:100vh}
+
+/* ── NAVBAR ── */
+.navbar{background:var(--bg2);border-bottom:1px solid var(--border);height:52px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-left{display:flex;align-items:center;gap:0}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nwrap{position:relative}
+.nbtn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all .15s}
+.nbtn:hover{border-color:var(--border2);color:var(--text)}
+.ndot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--accent);border-radius:50%;border:2px solid var(--bg2);display:none}
+.npanel{position:absolute;top:42px;right:0;width:320px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);z-index:200;display:none;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.npanel.open{display:block}
+.nph{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600}
+.npc{font-size:11px;color:var(--accent);cursor:pointer}
+.nitem{display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.nitem:hover{background:var(--bg3)}
+.nitem:last-child{border-bottom:none}
+.nidot{width:6px;height:6px;background:var(--accent);border-radius:50%;flex-shrink:0;margin-top:5px}
+.nititle{font-size:13px;font-weight:500;margin-bottom:2px}
+.nisub{font-size:12px;color:var(--text2)}
+.upill{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 12px 4px 4px}
+.uav{width:24px;height:24px;border-radius:50%;background:var(--accent-bg);border:1px solid var(--accent-border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--accent)}
+.uname{font-size:12px;font-weight:500}
+.signout{background:transparent;border:none;color:var(--text3);font-size:12px;padding:4px 8px;border-radius:6px;transition:color .15s}
+.signout:hover{color:var(--red)}
+
+/* ── LAYOUT ── */
+.app-body{display:flex;flex:1;min-height:calc(100vh - 52px)}
+.sidebar{width:216px;background:var(--bg2);border-right:1px solid var(--border);padding:12px 10px;flex-shrink:0;overflow-y:auto}
+.sbs{margin-bottom:20px}
+.sbl{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:0 8px;margin-bottom:4px}
+.sbi{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:all .12s;margin-bottom:1px}
+.sbi:hover{background:var(--bg3);color:var(--text)}
+.sbi.active{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.sbi svg{width:14px;height:14px;flex-shrink:0;opacity:.6}
+.sbi.active svg{opacity:1}
+
+/* ── CONTENT ── */
+.content{flex:1;padding:24px;overflow-y:auto;min-width:0}
+.page{display:none}
+.page.active{display:block}
+.ptitle{font-size:20px;font-weight:600;letter-spacing:-.5px;margin-bottom:3px}
+.psub{color:var(--text2);font-size:13px;margin-bottom:24px}
+
+/* ── STAT CARDS ── */
+.sgrid{display:grid;gap:12px;margin-bottom:20px}
+.s4{grid-template-columns:repeat(4,1fr)}
+.s3{grid-template-columns:repeat(3,1fr)}
+.s2{grid-template-columns:repeat(2,1fr)}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:18px 20px}
+.slbl{font-size:10px;color:var(--text2);font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.sval{font-size:26px;font-weight:600;letter-spacing:-1px;line-height:1}
+.ssub{font-size:12px;margin-top:6px;color:var(--text2)}
+.ssub.g{color:var(--green)}.ssub.a{color:var(--amber)}.ssub.r{color:var(--red)}
+
+/* ── CARD ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:16px}
+.ch{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ct{font-size:13px;font-weight:600}
+.ca{display:flex;gap:8px;align-items:center}
+
+/* ── BUTTONS ── */
+.bsm{background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:7px 14px;font-size:12px;font-weight:600;transition:background .15s;white-space:nowrap}
+.bsm:hover{background:var(--accent2)}
+.bgh{background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:var(--r);padding:7px 12px;font-size:12px;font-weight:500;transition:all .15s}
+.bgh:hover{border-color:var(--border2);color:var(--text)}
+.bdng{background:transparent;border:1px solid var(--red-border);color:var(--red);border-radius:var(--r);padding:5px 10px;font-size:11px;font-weight:600;transition:all .15s}
+.bdng:hover{background:var(--red-bg)}
+.bsuc{background:transparent;border:1px solid var(--green-border);color:var(--green);border-radius:var(--r);padding:5px 10px;font-size:11px;font-weight:600;transition:all .15s}
+.bsuc:hover{background:var(--green-bg)}
+
+/* ── TABLE ── */
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:9px 16px;font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--border)}
+td{padding:11px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.015)}
+.bn{font-weight:500;margin-bottom:2px}
+.bs{font-size:11px;color:var(--text2)}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.bd{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.bgray{background:var(--bg4);color:var(--text2)}
+.bblue{background:var(--blue-bg);color:var(--blue)}
+.bamber{background:var(--amber-bg);color:var(--amber)}
+.bgreen{background:var(--green-bg);color:var(--green)}
+.bred{background:var(--red-bg);color:var(--red)}
+.bpurple{background:var(--accent-bg);color:var(--accent)}
+
+/* ── INPUTS ── */
+.search{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:7px 11px;color:var(--text);font-size:13px;outline:none;transition:border .15s}
+.search:focus{border-color:var(--accent)}
+.stsel{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--text);outline:none;font-family:'Inter',sans-serif}
+.ninput{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--text);width:150px;font-family:'Inter',sans-serif;outline:none}
+.ninput:focus,.stsel:focus{border-color:var(--accent)}
+
+/* ── AGENT CARDS ── */
+.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.acard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:18px;transition:border-color .15s}
+.acard:hover{border-color:var(--border2)}
+.atop{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.aav{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.avi{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.avg{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.ava{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.aname{font-size:14px;font-weight:600;margin-bottom:2px}
+.arole{font-size:11px;color:var(--text2)}
+.astats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ast{background:var(--bg3);border-radius:6px;padding:9px 8px;text-align:center}
+.asn{font-size:17px;font-weight:600;line-height:1}
+.asl{font-size:9px;color:var(--text2);margin-top:3px;text-transform:uppercase;letter-spacing:.3px}
+.conv{font-size:11px;color:var(--text2);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between}
+.convv{color:var(--green);font-weight:600}
+
+/* ── PIPELINE ── */
+.pgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.pcol{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden}
+.phead{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.pht{font-size:12px;font-weight:600}
+.pcnt{background:var(--bg3);border-radius:10px;padding:2px 7px;font-size:11px;font-weight:600;color:var(--text2)}
+.pitems{padding:10px;display:flex;flex-direction:column;gap:8px;min-height:80px}
+.pitem{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.pbiz{font-size:12px;font-weight:600;margin-bottom:2px}
+.pagt{font-size:11px;color:var(--text2)}
+.pemp{font-size:11px;color:var(--text3);text-align:center;padding:16px 0}
+
+/* ── LEADERBOARD ── */
+.lbwrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:16px}
+.lbrow{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--border);transition:background .1s}
+.lbrow:last-child{border-bottom:none}
+.lbrow:hover{background:var(--bg3)}
+.lbrank{font-size:20px;font-weight:700;width:30px;text-align:center;flex-shrink:0}
+.r1{color:#f59e0b}.r2{color:#94a3b8}.r3{color:#b45309}
+.lbav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.lbi{flex:1;min-width:0}
+.lbn{font-size:14px;font-weight:600;margin-bottom:3px}
+.lbm{font-size:12px;color:var(--text2)}
+.lbnums{display:flex;gap:16px;flex-shrink:0}
+.lbnum{text-align:center}
+.lbnum .n{font-size:16px;font-weight:600}
+.lbnum .l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.3px}
+.lbbar{background:var(--bg3);border-radius:20px;height:5px;overflow:hidden;width:100px;flex-shrink:0}
+.lbfill{height:100%;border-radius:20px;background:var(--accent)}
+
+/* ── REVENUE ── */
+.revrow{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border)}
+.revrow:last-child{border-bottom:none}
+.revagt{display:flex;align-items:center;gap:10px}
+.revav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.revname{font-size:13px;font-weight:500}
+.revdeals{font-size:12px;color:var(--text2)}
+.revamt{font-size:14px;font-weight:600;color:var(--green)}
+.revbar{background:var(--bg3);height:6px;border-radius:20px;overflow:hidden;width:120px}
+.revfill{height:100%;border-radius:20px;background:var(--green)}
+
+/* ── GENERATOR ── */
+.ggrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.genbtn{width:100%;background:var(--accent);border:none;border-radius:var(--r);padding:12px;font-size:14px;font-weight:600;color:#fff;transition:background .15s;margin-top:8px;letter-spacing:-.2px}
+.genbtn:hover{background:var(--accent2)}
+.genbtn:disabled{opacity:.45;cursor:not-allowed}
+.progwrap{display:none;margin-top:14px}
+.progbar{background:var(--bg3);border-radius:20px;height:3px;overflow:hidden;margin-bottom:8px}
+.progfill{height:100%;background:var(--accent);border-radius:20px;width:0%;transition:width .3s}
+.progst{font-size:12px;color:var(--text2)}
+.reswrap{display:none;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-top:12px}
+.reslbl{font-size:10px;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.resurl{font-size:13px;color:var(--accent);font-weight:600;margin-bottom:12px;word-break:break-all}
+.resbtns{display:flex;gap:8px}
+.copybtn{flex:1;background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:9px;font-size:13px;font-weight:600;transition:background .15s}
+.copybtn:hover{background:var(--accent2)}
+.openbtn{flex:1;background:var(--bg4);border:1px solid var(--border);color:var(--text);border-radius:var(--r);padding:9px;font-size:13px;font-weight:500;transition:all .15s}
+.openbtn:hover{border-color:var(--border2)}
+
+/* ── HOT LEADS ── */
+.hlitem{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px}
+.hlitem:last-child{border-bottom:none}
+.hldot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.hlbiz{flex:1}
+.hln{font-size:13px;font-weight:600;margin-bottom:2px}
+.hls{font-size:12px;color:var(--text2)}
+.hll{font-size:11px;color:var(--accent);cursor:pointer;margin-top:3px}
+.hlnote{font-size:12px;color:var(--text2);font-style:italic;margin-top:3px}
+
+/* ── SETTINGS ── */
+.ssec{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:20px;margin-bottom:16px}
+.ssec h3{font-size:14px;font-weight:600;margin-bottom:4px}
+.ssec .sdesc{font-size:12px;color:var(--text2);margin-bottom:18px}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.srow:last-child{border-bottom:none}
+.srowl .sn{font-size:13px;font-weight:500}
+.srowl .sd{font-size:12px;color:var(--text2);margin-top:2px}
+.srowacts{display:flex;gap:8px;align-items:center}
+.iinput{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--text);outline:none;width:160px;font-family:'Inter',sans-serif}
+.iinput:focus{border-color:var(--accent)}
+
+/* ── TIP CARD ── */
+.tipcard{background:var(--bg2);border:1px solid var(--amber-border);border-radius:var(--rl);padding:13px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
+.tipt{font-size:13px;color:var(--text2);line-height:1.6}
+.tipt strong{color:var(--text);font-weight:600}
+
+/* ── PROFILE ── */
+.phero{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:24px;margin-bottom:16px;display:flex;align-items:center;gap:20px}
+.pavlg{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0}
+.pname{font-size:20px;font-weight:600;letter-spacing:-.5px;margin-bottom:3px}
+.prole{font-size:13px;color:var(--text2)}
+
+/* ── MODAL ── */
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;align-items:center;justify-content:center}
+.mbg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:28px;width:420px;max-width:90vw;animation:fadeUp .2s ease}
+.modal h3{font-size:16px;font-weight:600;letter-spacing:-.3px;margin-bottom:20px}
+.mbtns{display:flex;gap:10px;margin-top:20px}
+.mbtns .btn-primary{flex:1}
+.bcancel{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:var(--r);padding:11px;font-size:14px;font-weight:600;transition:all .15s}
+.bcancel:hover{border-color:var(--border2);color:var(--text)}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:48px 20px;color:var(--text2)}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginPage">
+  <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);background-image:radial-gradient(ellipse at 50% -20%,rgba(99,102,241,0.12) 0%,transparent 60%)">
+    <div class="lcard">
+      <div class="brand"><div class="bmark">P</div><div class="bname">Peakline Portal</div></div>
+      <h2>Welcome back</h2>
+      <p class="sub">Sign in to your account to continue</p>
+      <div class="field"><label>Username</label><input id="lu" type="text" placeholder="your username" autocomplete="username"></div>
+      <div class="field"><label>Password</label><input id="lp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
+      <button class="btn-primary" onclick="login()">Sign in</button>
+      <div class="lerr" id="lerr">Incorrect username or password</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="appPage" style="display:none;flex-direction:column;min-height:100vh">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <div class="brand" style="margin-right:0"><div class="bmark">P</div><div class="bname">Peakline Portal</div></div>
+    </div>
+    <div class="nav-right">
+      <div class="nwrap">
+        <div class="nbtn" id="nbtn" onclick="toggleN()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div class="ndot" id="ndot"></div>
+        </div>
+        <div class="npanel" id="npanel">
+          <div class="nph"><span>Notifications</span><span class="npc" onclick="clearN()">Mark all read</span></div>
+          <div id="nlist"></div>
+        </div>
+      </div>
+      <div class="upill"><div class="uav" id="uav"></div><span class="uname" id="uname"></span></div>
+      <button class="signout" onclick="logout()">Sign out</button>
+    </div>
+  </nav>
+
+  <!-- BODY -->
+  <div class="app-body">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="content" id="content">
+
+      <!-- OVERVIEW -->
+      <div class="page" id="pg-overview">
+        <div class="ptitle">Overview</div><div class="psub">Your team's live performance</div>
+        <div class="sgrid s4" id="ov-stats"></div>
+        <div class="agrid" id="ov-agents"></div>
+        <div class="card"><div class="ch"><span class="ct">Recent activity</span></div>
+        <table><thead><tr><th>Business</th><th>Agent</th><th>Category</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody id="ov-rec"></tbody></table></div>
+      </div>
+
+      <!-- PIPELINE -->
+      <div class="page" id="pg-pipeline">
+        <div class="ptitle">Pipeline</div><div class="psub">All demos by stage across the team</div>
+        <div class="pgrid" id="pgrid"></div>
+      </div>
+
+      <!-- REVENUE -->
+      <div class="page" id="pg-revenue">
+        <div class="ptitle">Revenue</div><div class="psub">Closed deals and earnings</div>
+        <div class="sgrid s4" id="rev-stats"></div>
+        <div class="card" style="margin-bottom:16px"><div class="ch"><span class="ct">Revenue by agent</span></div><div id="rev-bd"></div></div>
+        <div class="card"><div class="ch"><span class="ct">Closed deals</span></div>
+        <table><thead><tr><th>Business</th><th>Agent</th><th>Package</th><th>Value</th><th>Date</th></tr></thead>
+        <tbody id="rev-tbl"></tbody></table></div>
+      </div>
+
+      <!-- LEADERBOARD (admin) -->
+      <div class="page" id="pg-leaderboard">
+        <div class="ptitle">Leaderboard</div><div class="psub">Team rankings — live</div>
+        <div id="lb-admin"></div>
+      </div>
+
+      <!-- ALL DEMOS -->
+      <div class="page" id="pg-alldemios">
+        <div class="ptitle">All demos</div><div class="psub">Every demo across the team</div>
+        <div class="card"><div class="ch"><span class="ct">Demo history</span>
+          <input class="search" placeholder="Search..." style="width:200px" oninput="renderAllDemos(this.value)">
+        </div>
+        <table><thead><tr><th>Business</th><th>Agent</th><th>Link</th><th>Status</th><th>Note</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody id="ademos"></tbody></table></div>
+      </div>
+
+      <!-- AGENTS -->
+      <div class="page" id="pg-agents">
+        <div class="ptitle">Agents</div><div class="psub">Manage your sales team</div>
+        <div style="margin-bottom:16px"><button class="bsm" onclick="openAdd()">+ Add agent</button></div>
+        <div class="card"><div class="ch"><span class="ct">Team</span></div>
+        <table><thead><tr><th>Name</th><th>Username</th><th>KrispCall</th><th>Demos</th><th>Hot leads</th><th>Closed</th><th>Conv%</th><th>Joined</th><th></th></tr></thead>
+        <tbody id="agtbl"></tbody></table></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="pg-settings">
+        <div class="ptitle">Settings</div><div class="psub">Manage accounts and credentials</div>
+        <div class="ssec"><h3>Agent credentials</h3><p class="sdesc">Update passwords or KrispCall numbers</p><div id="set-agents"></div></div>
+        <div class="ssec"><h3>Admin password</h3><p class="sdesc">Change your own login password</p>
+          <div class="field" style="max-width:300px"><label>New password</label><input type="password" id="newap" placeholder="New password"></div>
+          <button class="bsm" onclick="chAdminPass()">Update password</button>
+        </div>
+      </div>
+
+      <!-- GENERATOR -->
+      <div class="page" id="pg-generator">
+        <div class="ptitle">Generate demo</div><div class="psub">Build a professional demo site for your lead in seconds</div>
+        <div class="tipcard">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div class="tipt" id="tiptext"></div>
+        </div>
+        <div class="ggrid">
+          <div class="card" style="margin:0">
+            <div class="ch"><span class="ct">Business details</span></div>
+            <div style="padding:18px">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="field"><label>Business name</label><input id="gn" type="text" placeholder="Mario's Pizza"></div>
+                <div class="field"><label>Category</label><select id="gc"><option>Restaurant</option><option>Plumber</option><option>Salon</option><option>Auto Repair</option><option>Dental</option><option>Contractor</option><option>HVAC</option><option>Roofing</option></select></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="field"><label>City</label><input id="gci" type="text" placeholder="Waco"></div>
+                <div class="field"><label>State</label><input id="gst" type="text" placeholder="TX"></div>
+              </div>
+              <div class="field"><label>Notes / vibe (optional)</label><input id="gno" type="text" placeholder="Family Italian, red & white colors, outdoor patio"></div>
+              <button class="genbtn" id="genbtn" onclick="genDemo()">Generate demo site →</button>
+              <div class="progwrap" id="progwrap">
+                <div class="progbar"><div class="progfill" id="progfill"></div></div>
+                <div class="progst" id="progst">Initializing...</div>
+              </div>
+              <div class="reswrap" id="reswrap">
+                <div class="reslbl">Demo ready</div>
+                <div class="resurl" id="resurl"></div>
+                <div class="resbtns">
+                  <button class="copybtn" onclick="copyDemo()">Copy link</button>
+                  <button class="openbtn" onclick="openDemo()">Open site</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="margin:0">
+            <div class="ch"><span class="ct">Recent demos</span></div>
+            <div id="gen-hist" style="max-height:440px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MY DEMOS -->
+      <div class="page" id="pg-mydemios">
+        <div class="ptitle">My demos</div><div class="psub">Every site you've generated</div>
+        <div class="card"><div class="ch"><span class="ct">History</span>
+          <input class="search" placeholder="Search..." style="width:180px" oninput="renderMyDemos(this.value)">
+        </div>
+        <table><thead><tr><th>Business</th><th>City</th><th>Demo link</th><th>Status</th><th>Notes</th><th>Date</th></tr></thead>
+        <tbody id="mydemos"></tbody></table></div>
+      </div>
+
+      <!-- HOT LEADS -->
+      <div class="page" id="pg-hotleads">
+        <div class="ptitle">Hot leads</div><div class="psub">Sent demos — track and follow up</div>
+        <div class="card"><div class="ch"><span class="ct">Active leads</span></div><div id="hllist"></div></div>
+      </div>
+
+      <!-- RANKINGS (agents) -->
+      <div class="page" id="pg-rankings">
+        <div class="ptitle">Rankings</div><div class="psub">See where you stand in the team</div>
+        <div id="lb-agent"></div>
+      </div>
+
+      <!-- MY STATS -->
+      <div class="page" id="pg-mystats">
+        <div class="ptitle">My stats</div><div class="psub">Your personal performance</div>
+        <div class="sgrid s3" id="my-stats"></div>
+        <div class="card"><div class="ch"><span class="ct">My closed deals</span></div>
+        <table><thead><tr><th>Business</th><th>Category</th><th>City</th><th>Package</th><th>Value</th><th>Date</th></tr></thead>
+        <tbody id="myclose"></tbody></table></div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="page" id="pg-profile">
+        <div class="ptitle">My profile</div><div class="psub">Your account and performance</div>
+        <div style="max-width:600px">
+          <div class="phero"><div class="pavlg avi" id="pav"></div>
+            <div><div class="pname" id="pnm"></div><div class="prole">Sales Agent · Peakline Web</div><div style="margin-top:8px;font-size:12px;color:var(--text2)" id="pkr"></div></div>
+          </div>
+          <div class="sgrid s3" id="pstats"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ADD AGENT MODAL -->
+<div class="mbg" id="addModal">
+  <div class="modal">
+    <h3>Add new agent</h3>
+    <div class="field"><label>Full name</label><input id="mn" type="text" placeholder="Mohamed Elbarbary"></div>
+    <div class="field"><label>Username</label><input id="mu" type="text" placeholder="mohamed"></div>
+    <div class="field"><label>Password</label><input id="mp" type="password" placeholder="••••••••"></div>
+    <div class="field"><label>KrispCall number (optional)</label><input id="mk" type="text" placeholder="+1 (555) 000-0000"></div>
+    <div class="mbtns"><button class="bcancel" onclick="closeM('addModal')">Cancel</button><button class="btn-primary" onclick="addAgent()">Create account</button></div>
+  </div>
+</div>
+
+<!-- CLOSE DEAL MODAL -->
+<div class="mbg" id="closeM">
+  <div class="modal">
+    <h3>Mark as closed</h3>
+    <div class="field"><label>Package sold</label>
+      <select id="cpkg"><option value="499">Starter — $499</option><option value="699" selected>Professional — $699</option><option value="999">Premium — $999</option></select>
+    </div>
+    <div class="field"><label>Notes (optional)</label><textarea id="cnotes" placeholder="Any notes about this deal..."></textarea></div>
+    <div class="mbtns"><button class="bcancel" onclick="closeM('closeM')">Cancel</button><button class="btn-primary" style="background:var(--green)" onclick="confirmClose()">Confirm closed</button></div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+const AK='pl_ag3',DK='pl_dm3',NK='pl_nt3',APK='pl_ap3';
+let cu=null,closingId=null,curUrl='';
+const ADMIN={username:'omar',password:'peakline2024',name:'Omar Medhat',role:'admin'};
+const TIPS=[
+  'Call <strong>Tuesday–Thursday 10am–12pm EST</strong> for best answer rates.',
+  'Always <strong>confirm email spelling</strong> letter by letter before hanging up.',
+  'Send the demo <strong>within 2 minutes</strong> of the lead agreeing to see it.',
+  'Add <strong>cuisine type and vibe</strong> to Notes for a better looking demo.',
+  'Post in <strong>#hot-leads immediately</strong> — faster = higher close rate.',
+  'Saturday <strong>10am–12pm EST</strong> is great for restaurants — owner is usually in.',
+  'If the owner isn\'t there, <strong>get the email anyway</strong> — we follow up.'
+];
+
+// ── STORAGE ──
+const G=id=>document.getElementById(id);
+const ga=()=>{try{return JSON.parse(localStorage.getItem(AK))||[]}catch{return[]}};
+const sa=a=>localStorage.setItem(AK,JSON.stringify(a));
+const gd=()=>{try{return JSON.parse(localStorage.getItem(DK))||[]}catch{return[]}};
+const sd=d=>localStorage.setItem(DK,JSON.stringify(d));
+const gn=()=>{try{return JSON.parse(localStorage.getItem(NK))||[]}catch{return[]}};
+const sn=n=>localStorage.setItem(NK,JSON.stringify(n));
+const gap=()=>localStorage.getItem(APK)||ADMIN.password;
+
+// ── NOTIFS ──
+function addN(title,sub){const n=gn();n.unshift({title,sub,read:false,id:Date.now()});sn(n.slice(0,30));renderN()}
+function renderN(){
+  const n=gn(),u=n.filter(x=>!x.read);
+  const dot=G('ndot');if(dot)dot.style.display=u.length?'block':'none';
+  const list=G('nlist');if(!list)return;
+  if(!n.length){list.innerHTML='<div style="padding:20px;text-align:center;color:var(--text2);font-size:13px">No notifications</div>';return;}
+  list.innerHTML=n.slice(0,6).map(x=>`<div class="nitem"><div>${x.read?'<div style="width:6px"></div>':'<div class="nidot"></div>'}</div><div><div class="nititle">${x.title}</div><div class="nisub">${x.sub}</div></div></div>`).join('');
+}
+function clearN(){sn(gn().map(x=>({...x,read:true})));renderN()}
+function toggleN(){G('npanel').classList.toggle('open')}
+document.addEventListener('click',e=>{const b=G('nbtn'),p=G('npanel');if(b&&p&&!b.contains(e.target)&&!p.contains(e.target))p.classList.remove('open')});
+
+// ── AUTH ──
+function login(){
+  const u=G('lu').value.trim().toLowerCase(),p=G('lp').value;
+  const adp=gap();
+  if(u===ADMIN.username&&p===adp){cu={...ADMIN,role:'admin'};start();return}
+  const a=ga().find(x=>x.username===u&&x.password===p);
+  if(a){cu={...a,role:'agent'};start();return}
+  const e=G('lerr');e.style.display='block';setTimeout(()=>e.style.display='none',3000);
+}
+function logout(){cu=null;G('loginPage').style.display='';G('appPage').style.display='none';G('lu').value='';G('lp').value=''}
+function start(){
+  G('loginPage').style.display='none';G('appPage').style.display='flex';
+  G('uav').textContent=ini(cu.name);G('uname').textContent=cu.name;
+  buildSB();renderN();
+  showPage(cu.role==='admin'?'overview':'generator');
+}
+
+// ── HELPERS ──
+function ini(n){return n.split(' ').map(x=>x[0]).join('').substring(0,2).toUpperCase()}
+function avc(i){return['avi','avg','ava'][i%3]}
+function fmtDate(ts){if(!ts)return'—';return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+function stBadge(s){
+  const m={generated:['bgray','Generated'],sent:['bblue','Sent'],hot_lead:['bamber','Hot lead'],closed:['bgreen','Closed'],lost:['bred','Lost']};
+  const[c,l]=m[s]||['bgray',s];
+  return`<span class="badge ${c}"><span class="bd"></span>${l}</span>`;
+}
+function closeM(id){G(id).classList.remove('open')}
+
+// ── SIDEBAR ──
+const ICONS={
+  overview:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>`,
+  pipeline:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+  revenue:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+  leaderboard:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg>`,
+  alldemios:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+  agents:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  settings:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+  generator:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+  mydemios:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+  hotleads:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c0 6-8 8-8 14a8 8 0 0 0 16 0c0-6-8-8-8-14z"/></svg>`,
+  rankings:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg>`,
+  mystats:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
+  profile:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`
+};
+
+function buildSB(){
+  const isA=cu.role==='admin';
+  const secs=isA?[
+    {lbl:'Main',items:['overview','pipeline','revenue','leaderboard']},
+    {lbl:'Management',items:['alldemios','agents','settings']}
+  ]:[
+    {lbl:'Tools',items:['generator','mydemios','hotleads']},
+    {lbl:'Performance',items:['rankings','mystats','profile']}
+  ];
+  const labels={overview:'Overview',pipeline:'Pipeline',revenue:'Revenue',leaderboard:'Leaderboard',alldemios:'All demos',agents:'Agents',settings:'Settings',generator:'Generate demo',mydemios:'My demos',hotleads:'Hot leads',rankings:'Rankings',mystats:'My stats',profile:'Profile'};
+  G('sidebar').innerHTML=secs.map(s=>`<div class="sbs"><div class="sbl">${s.lbl}</div>${s.items.map(i=>`<div class="sbi" id="sb-${i}" onclick="showPage('${i}')">${ICONS[i]||''}${labels[i]}</div>`).join('')}</div>`).join('');
+}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sbi').forEach(x=>x.classList.remove('active'));
+  const pg=G('pg-'+id);if(pg)pg.classList.add('active');
+  const sb=G('sb-'+id);if(sb)sb.classList.add('active');
+  const R={overview:renderOV,pipeline:renderPL,revenue:renderRV,leaderboard:()=>renderLB('lb-admin',true),alldemios:()=>renderAllDemos(''),agents:renderAgents,settings:renderSettings,generator:renderGenHist,mydemios:()=>renderMyDemos(''),hotleads:renderHL,rankings:()=>renderLB('lb-agent',false),mystats:renderMyStats,profile:renderProfile};
+  if(R[id])R[id]();
+}
+
+// ── OVERVIEW ──
+function renderOV(){
+  const demos=gd(),agents=ga();
+  const closed=demos.filter(d=>d.status==='closed');
+  const hot=demos.filter(d=>d.status==='hot_lead'||d.status==='closed');
+  const rev=closed.reduce((s,d)=>s+(d.value||0),0);
+  G('ov-stats').innerHTML=`
+    <div class="sc"><div class="slbl">Total demos</div><div class="sval">${demos.length}</div><div class="ssub">${demos.filter(d=>d.status!=='generated').length} sent to leads</div></div>
+    <div class="sc"><div class="slbl">Hot leads</div><div class="sval">${hot.length}</div><div class="ssub g">${demos.length?Math.round((hot.length/demos.length)*100):0}% from demos</div></div>
+    <div class="sc"><div class="slbl">Deals closed</div><div class="sval">${closed.length}</div><div class="ssub g">${hot.length?Math.round((closed.length/hot.length)*100):0}% close rate</div></div>
+    <div class="sc"><div class="slbl">Total revenue</div><div class="sval">$${rev.toLocaleString()}</div><div class="ssub">${closed.length?'Avg $'+Math.round(rev/closed.length).toLocaleString():''}</div></div>`;
+  G('ov-agents').innerHTML=agents.map((a,i)=>{
+    const ad=demos.filter(d=>d.agentUsername===a.username);
+    const ac=ad.filter(d=>d.status==='closed');
+    const ah=ad.filter(d=>d.status==='hot_lead'||d.status==='closed');
+    const conv=ad.length?Math.round((ac.length/ad.length)*100):0;
+    const arv=ac.reduce((s,d)=>s+(d.value||0),0);
+    return`<div class="acard"><div class="atop"><div class="aav ${avc(i)}">${ini(a.name)}</div><div><div class="aname">${a.name}</div><div class="arole">Sales Agent${a.krisp?` · ${a.krisp}`:''}</div></div></div>
+    <div class="astats"><div class="ast"><div class="asn">${ad.length}</div><div class="asl">Demos</div></div><div class="ast"><div class="asn">${ah.length}</div><div class="asl">Hot</div></div><div class="ast"><div class="asn">${ac.length}</div><div class="asl">Closed</div></div><div class="ast"><div class="asn">$${arv.toLocaleString()}</div><div class="asl">Rev</div></div></div>
+    <div class="conv"><span>Conversion rate</span><span class="convv">${conv}%</span></div></div>`;
+  }).join('')||'<div style="color:var(--text2);font-size:13px;grid-column:1/-1;padding:8px">No agents yet. Add agents to get started.</div>';
+  const recent=[...demos].sort((a,b)=>b.createdAt-a.createdAt).slice(0,8);
+  G('ov-rec').innerHTML=recent.length?recent.map(d=>`<tr><td><div class="bn">${d.bizName}</div><div class="bs">${d.city}, ${d.state}</div></td><td style="color:var(--text2)">${d.agentName}</td><td><span class="badge bgray">${d.category}</span></td><td>${stBadge(d.status)}</td><td style="color:var(--text3);font-size:12px">${fmtDate(d.createdAt)}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">No activity yet</td></tr>';
+}
+
+// ── PIPELINE ──
+function renderPL(){
+  const demos=gd();
+  const stages=[{k:'generated',l:'Generated',c:'var(--text2)'},{k:'sent',l:'Sent',c:'var(--blue)'},{k:'hot_lead',l:'Hot lead',c:'var(--amber)'},{k:'closed',l:'Closed',c:'var(--green)'},{k:'lost',l:'Lost',c:'var(--red)'}];
+  G('pgrid').innerHTML=stages.map(s=>{
+    const items=demos.filter(d=>d.status===s.k);
+    return`<div class="pcol"><div class="phead"><span class="pht" style="color:${s.c}">${s.l}</span><span class="pcnt">${items.length}</span></div><div class="pitems">${items.length?items.slice(0,8).map(d=>`<div class="pitem"><div class="pbiz">${d.bizName}</div><div class="pagt">${d.agentName} · ${d.city}</div></div>`).join(''):'<div class="pemp">Empty</div>'}</div></div>`;
+  }).join('');
+}
+
+// ── REVENUE ──
+function renderRV(){
+  const demos=gd(),agents=ga();
+  const closed=demos.filter(d=>d.status==='closed');
+  const rev=closed.reduce((s,d)=>s+(d.value||0),0);
+  G('rev-stats').innerHTML=`
+    <div class="sc"><div class="slbl">Total revenue</div><div class="sval">$${rev.toLocaleString()}</div><div class="ssub g">${closed.length} closed deals</div></div>
+    <div class="sc"><div class="slbl">Avg deal size</div><div class="sval">$${closed.length?Math.round(rev/closed.length).toLocaleString():0}</div><div class="ssub">Per deal</div></div>
+    <div class="sc"><div class="slbl">Maintenance MRR</div><div class="sval">$${(closed.length*99).toLocaleString()}</div><div class="ssub a">If all on $99/mo</div></div>
+    <div class="sc"><div class="slbl">Commission paid</div><div class="sval">$${Math.round(rev*.12).toLocaleString()}</div><div class="ssub">@ 12% rate</div></div>`;
+  const maxR=Math.max(...agents.map(a=>demos.filter(d=>d.agentUsername===a.username&&d.status==='closed').reduce((s,d)=>s+(d.value||0),0)),1);
+  G('rev-bd').innerHTML=agents.length?agents.map((a,i)=>{
+    const ar=demos.filter(d=>d.agentUsername===a.username&&d.status==='closed');
+    const rv=ar.reduce((s,d)=>s+(d.value||0),0);
+    return`<div class="revrow"><div class="revagt"><div class="revav ${avc(i)}">${ini(a.name)}</div><div><div class="revname">${a.name}</div><div class="revdeals">${ar.length} deals</div></div></div><div class="revbar"><div class="revfill" style="width:${Math.round((rv/maxR)*100)}%"></div></div><div class="revamt">$${rv.toLocaleString()}</div></div>`;
+  }).join(''):'<div style="padding:32px;text-align:center;color:var(--text2)">No closed deals yet</div>';
+  G('rev-tbl').innerHTML=closed.length?[...closed].sort((a,b)=>b.createdAt-a.createdAt).map(d=>`<tr><td><div class="bn">${d.bizName}</div></td><td style="color:var(--text2)">${d.agentName}</td><td><span class="badge bpurple">${d.pkgName||'Professional'}</span></td><td style="color:var(--green);font-weight:600">$${(d.value||699).toLocaleString()}</td><td style="color:var(--text3);font-size:12px">${fmtDate(d.createdAt)}</td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text2)">No closed deals yet</td></tr>';
+}
+
+// ── LEADERBOARD ──
+function renderLB(targetId, showRevenue){
+  const demos=gd(),agents=ga();
+  const ac=['avi','avg','ava'],rm=['r1','r2','r3'],md=['🥇','🥈','🥉'];
+  const sorted=agents.map(a=>{
+    const ad=demos.filter(d=>d.agentUsername===a.username);
+    return{...a,demos:ad.length,hot:ad.filter(d=>d.status==='hot_lead'||d.status==='closed').length,closed:ad.filter(d=>d.status==='closed').length,rev:ad.filter(d=>d.status==='closed').reduce((s,d)=>s+(d.value||0),0)};
+  }).sort((a,b)=>b.closed-a.closed||b.hot-a.hot||b.demos-a.demos);
+  const maxD=Math.max(...sorted.map(a=>a.demos),1);
+  G(targetId).innerHTML=`<div class="lbwrap">${sorted.length?sorted.map((a,i)=>`
+    <div class="lbrow">
+      <div class="lbrank ${rm[i]||''}">${md[i]||i+1}</div>
+      <div class="lbav ${ac[i%3]}">${ini(a.name)}</div>
+      <div class="lbi"><div class="lbn">${a.name}${cu.username===a.username?' <span style="font-size:11px;color:var(--accent)">(you)</span>':''}</div><div class="lbm">${a.demos} demos · ${a.hot} hot leads</div></div>
+      <div class="lbnums">
+        <div class="lbnum"><div class="n">${a.closed}</div><div class="l">Closed</div></div>
+        ${showRevenue?`<div class="lbnum"><div class="n" style="color:var(--green)">$${a.rev.toLocaleString()}</div><div class="l">Revenue</div></div>`:''}
+      </div>
+      <div class="lbbar"><div class="lbfill" style="width:${Math.round((a.demos/maxD)*100)}%"></div></div>
+    </div>`).join(''):'<div style="padding:40px;text-align:center;color:var(--text2)">No agents yet</div>'}</div>`;
+}
+
+// ── ALL DEMOS ──
+function renderAllDemos(filter){
+  const demos=[...gd()].filter(d=>!filter||d.bizName.toLowerCase().includes(filter.toLowerCase())).sort((a,b)=>b.createdAt-a.createdAt);
+  G('ademos').innerHTML=demos.length?demos.map(d=>`<tr>
+    <td><div class="bn">${d.bizName}</div><div class="bs">${d.city}, ${d.state} · ${d.category}</div></td>
+    <td style="color:var(--text2)">${d.agentName}</td>
+    <td><span style="color:var(--accent);font-size:12px;cursor:pointer" onclick="navigator.clipboard.writeText('https://${d.url}')">${d.url}</span></td>
+    <td>${stBadge(d.status)}</td>
+    <td style="color:var(--text2);font-size:12px">${d.note||'—'}</td>
+    <td style="color:var(--text3);font-size:12px">${fmtDate(d.createdAt)}</td>
+    <td><div style="display:flex;gap:6px">${d.status!=='closed'?`<button class="bsuc" onclick="openClose('${d.id}')">Close deal</button>`:''}<button class="bdng" onclick="delDemo('${d.id}')">Delete</button></div></td>
+  </tr>`).join(''):'<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text2)">No demos yet</td></tr>';
+}
+
+// ── AGENTS TABLE ──
+function renderAgents(){
+  const agents=ga(),demos=gd();
+  G('agtbl').innerHTML=agents.length?agents.map((a,i)=>{
+    const ad=demos.filter(d=>d.agentUsername===a.username);
+    const ac=ad.filter(d=>d.status==='closed');
+    const ah=ad.filter(d=>d.status==='hot_lead'||d.status==='closed');
+    const conv=ad.length?Math.round((ac.length/ad.length)*100):0;
+    return`<tr><td><div class="bn">${a.name}</div></td><td style="color:var(--text2)">@${a.username}</td><td style="color:var(--text2)">${a.krisp||'—'}</td><td>${ad.length}</td><td>${ah.length}</td><td>${ac.length}</td><td><span style="color:${conv>20?'var(--green)':conv>5?'var(--amber)':'var(--text2)'}">${conv}%</span></td><td style="color:var(--text3);font-size:12px">${fmtDate(a.createdAt)}</td><td><button class="bdng" onclick="removeAgent('${a.username}')">Remove</button></td></tr>`;
+  }).join(''):'<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text2)">No agents yet</td></tr>';
+}
+
+// ── SETTINGS ──
+function renderSettings(){
+  const agents=ga();
+  G('set-agents').innerHTML=agents.length?agents.map(a=>`
+    <div class="srow"><div class="srowl"><div class="sn">${a.name}</div><div class="sd">@${a.username}</div></div>
+    <div class="srowacts">
+      <input class="iinput" placeholder="New password" id="sp-${a.username}">
+      <input class="iinput" placeholder="KrispCall #" id="sk-${a.username}" value="${a.krisp||''}">
+      <button class="bsm" onclick="saveAgSet('${a.username}')">Save</button>
+    </div></div>`).join(''):'<div style="color:var(--text2);font-size:13px">No agents yet</div>';
+}
+function saveAgSet(u){
+  const agents=ga(),i=agents.findIndex(a=>a.username===u);
+  if(i>-1){const np=G('sp-'+u)?.value,nk=G('sk-'+u)?.value;if(np)agents[i].password=np;if(nk!==undefined)agents[i].krisp=nk;sa(agents);alert('Saved!')}
+}
+function chAdminPass(){const p=G('newap').value;if(!p){alert('Enter a password');return}localStorage.setItem(APK,p);G('newap').value='';alert('Password updated!')}
+
+// ── GENERATOR ──
+function renderGenHist(){
+  G('tiptext').innerHTML='<strong>Tip:</strong> '+TIPS[Math.floor(Math.random()*TIPS.length)];
+  const demos=gd().filter(d=>d.agentUsername===cu.username).sort((a,b)=>b.createdAt-a.createdAt).slice(0,6);
+  G('gen-hist').innerHTML=demos.length?demos.map(d=>`
+    <div style="padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500;margin-bottom:2px">${d.bizName}</div>
+        <div style="font-size:11px;color:var(--text2)">${d.city}, ${d.state} · ${d.category}</div>
+        <div style="font-size:11px;color:var(--accent);cursor:pointer;margin-top:3px" onclick="navigator.clipboard.writeText('https://${d.url}')">${d.url}</div>
+      </div>${stBadge(d.status)}
+    </div>`).join(''):'<div style="padding:32px;text-align:center;color:var(--text2);font-size:13px">No demos yet — generate your first one</div>';
+}
+
+async function genDemo(){
+  const name=G('gn').value.trim(),cat=G('gc').value,city=G('gci').value.trim(),state=G('gst').value.trim();
+  if(!name||!city||!state){alert('Fill in business name, city and state.');return}
+  const btn=G('genbtn'),pw=G('progwrap'),pf=G('progfill'),ps=G('progst'),rw=G('reswrap');
+  btn.disabled=true;pw.style.display='block';rw.style.display='none';pf.style.width='0%';
+  const steps=['Analyzing business details...','Generating website content...','Applying design and layout...','Deploying to trypeakline.com...'];
+  let pct=0,step=0;
+  const iv=setInterval(()=>{pct=Math.min(pct+1.2,88);pf.style.width=pct+'%';if(pct>step*22&&step<steps.length){ps.textContent=steps[step];step++}},200);
+  try{
+    const res=await fetch('/api/generate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({bizName:name,category:cat,city,state,notes:G('gno').value})
+    });
+    const data=await res.json();
+    clearInterval(iv);pf.style.width='100%';
+    if(!data.success){ps.textContent='Error: '+(data.error||'Unknown error');ps.style.color='var(--red)';btn.disabled=false;return}
+    ps.textContent='Demo ready!';
+    curUrl=data.url;
+    const id='d'+Date.now();
+    const demos=gd();
+    demos.push({id,bizName:name,category:cat,city,state,notes:G('gno').value,url:curUrl,netlifyUrl:data.netlifyUrl,status:'generated',agentUsername:cu.username,agentName:cu.name,createdAt:Date.now(),note:'',value:0});
+    sd(demos);
+    G('resurl').textContent=curUrl;rw.style.display='block';
+    addN('Demo generated',`${name} by ${cu.name}`);
+    renderGenHist();
+    G('gn').value='';G('gci').value='';G('gst').value='';G('gno').value='';
+  }catch(e){clearInterval(iv);ps.textContent='Failed: '+e.message;ps.style.color='var(--red)'}
+  btn.disabled=false;
+}
+
+function copyDemo(){navigator.clipboard.writeText('https://'+curUrl);const b=document.querySelector('.copybtn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy link',2000)}
+function openDemo(){window.open('https://'+curUrl)}
+
+// ── MY DEMOS ──
+function renderMyDemos(filter){
+  const demos=gd().filter(d=>d.agentUsername===cu.username&&(!filter||d.bizName.toLowerCase().includes(filter.toLowerCase()))).sort((a,b)=>b.createdAt-a.createdAt);
+  G('mydemos').innerHTML=demos.length?demos.map(d=>`<tr>
+    <td><div class="bn">${d.bizName}</div><div class="bs">${d.category}</div></td>
+    <td style="color:var(--text2)">${d.city}, ${d.state}</td>
+    <td><span style="color:var(--accent);font-size:12px;cursor:pointer" onclick="navigator.clipboard.writeText('https://${d.url}')">${d.url}</span></td>
+    <td>${d.status==='closed'?stBadge(d.status):`<select class="stsel" onchange="agUpdateSt('${d.id}',this.value)"><option value="generated" ${d.status==='generated'?'selected':''}>Generated</option><option value="sent" ${d.status==='sent'?'selected':''}>Sent to lead</option><option value="hot_lead" ${d.status==='hot_lead'?'selected':''}>Hot lead</option><option value="lost" ${d.status==='lost'?'selected':''}>Lost</option></select>`}</td>
+    <td><input class="ninput" value="${d.note||''}" placeholder="Add note..." onchange="updateNote('${d.id}',this.value)"></td>
+    <td style="color:var(--text3);font-size:12px">${fmtDate(d.createdAt)}</td>
+  </tr>`).join(''):'<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text2)">No demos yet</td></tr>';
+}
+
+// ── HOT LEADS ──
+function renderHL(){
+  const demos=gd().filter(d=>d.agentUsername===cu.username&&(d.status==='hot_lead'||d.status==='sent')).sort((a,b)=>b.createdAt-a.createdAt);
+  G('hllist').innerHTML=demos.length?demos.map(d=>`
+    <div class="hlitem">
+      <div class="hldot" style="background:${d.status==='hot_lead'?'var(--amber)':'var(--blue)'}"></div>
+      <div class="hlbiz">
+        <div class="hln">${d.bizName}</div>
+        <div class="hls">${d.city}, ${d.state} · ${d.category}</div>
+        <div class="hll" onclick="navigator.clipboard.writeText('https://${d.url}')">Copy: ${d.url}</div>
+        ${d.note?`<div class="hlnote">"${d.note}"</div>`:''}
+      </div>
+      <div style="text-align:right;flex-shrink:0">${stBadge(d.status)}<div style="font-size:11px;color:var(--text3);margin-top:4px">${fmtDate(d.createdAt)}</div></div>
+    </div>`).join(''):'<div style="padding:48px;text-align:center;color:var(--text2)">No hot leads yet</div>';
+}
+
+// ── MY STATS ──
+function renderMyStats(){
+  const demos=gd().filter(d=>d.agentUsername===cu.username);
+  const closed=demos.filter(d=>d.status==='closed');
+  const hot=demos.filter(d=>d.status==='hot_lead'||d.status==='closed');
+  const rev=closed.reduce((s,d)=>s+(d.value||0),0);
+  G('my-stats').innerHTML=`
+    <div class="sc"><div class="slbl">Demos generated</div><div class="sval">${demos.length}</div></div>
+    <div class="sc"><div class="slbl">Hot leads</div><div class="sval">${hot.length}</div><div class="ssub g">${demos.length?Math.round((hot.length/demos.length)*100):0}% rate</div></div>
+    <div class="sc"><div class="slbl">Deals closed</div><div class="sval">${closed.length}</div><div class="ssub g">$${rev.toLocaleString()} earned</div></div>`;
+  G('myclose').innerHTML=closed.length?[...closed].sort((a,b)=>b.createdAt-a.createdAt).map(d=>`<tr><td><div class="bn">${d.bizName}</div></td><td><span class="badge bgray">${d.category}</span></td><td style="color:var(--text2)">${d.city}, ${d.state}</td><td><span class="badge bpurple">${d.pkgName||'Professional'}</span></td><td style="color:var(--green);font-weight:600">$${(d.value||699).toLocaleString()}</td><td style="color:var(--text3);font-size:12px">${fmtDate(d.createdAt)}</td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text2)">No closed deals yet — keep pushing!</td></tr>';
+}
+
+// ── PROFILE ──
+function renderProfile(){
+  const demos=gd().filter(d=>d.agentUsername===cu.username);
+  const closed=demos.filter(d=>d.status==='closed');
+  const hot=demos.filter(d=>d.status==='hot_lead'||d.status==='closed');
+  G('pav').textContent=ini(cu.name);G('pnm').textContent=cu.name;
+  G('pkr').textContent=cu.krisp?'KrispCall: '+cu.krisp:'';
+  G('pstats').innerHTML=`
+    <div class="sc"><div class="slbl">Demos</div><div class="sval">${demos.length}</div></div>
+    <div class="sc"><div class="slbl">Hot leads</div><div class="sval">${hot.length}</div></div>
+    <div class="sc"><div class="slbl">Closed</div><div class="sval">${closed.length}</div></div>`;
+}
+
+// ── STATUS / NOTE / CLOSE / DELETE ──
+function agUpdateSt(id,status){
+  if(status==='closed')return;
+  const d=gd(),i=d.findIndex(x=>x.id===id);
+  if(i>-1){d[i].status=status;sd(d);if(status==='hot_lead')addN('Hot lead!',`${d[i].bizName} marked hot by ${d[i].agentName}`)}
+}
+function updateNote(id,note){const d=gd(),i=d.findIndex(x=>x.id===id);if(i>-1){d[i].note=note;sd(d)}}
+function openClose(id){closingId=id;G('closeM').classList.add('open')}
+function confirmClose(){
+  if(!closingId)return;
+  const demos=gd(),i=demos.findIndex(d=>d.id===closingId);
+  if(i>-1){
+    const pkg=G('cpkg').value,pkgN={499:'Starter',699:'Professional',999:'Premium'};
+    demos[i].status='closed';demos[i].value=parseInt(pkg);demos[i].pkgName=pkgN[pkg];demos[i].closeNote=G('cnotes').value;
+    sd(demos);addN('Deal closed! 🎉',`${demos[i].bizName} — $${pkg} (${demos[i].agentName})`);
+  }
+  closeM('closeM');closingId=null;G('cnotes').value='';
+  renderAllDemos('');renderOV();
+}
+function delDemo(id){if(!confirm('Delete permanently?'))return;sd(gd().filter(d=>d.id!==id));renderAllDemos('')}
+
+// ── AGENT MGMT ──
+function openAdd(){G('addModal').classList.add('open')}
+function addAgent(){
+  const name=G('mn').value.trim(),user=G('mu').value.trim().toLowerCase(),pass=G('mp').value,krisp=G('mk').value.trim();
+  if(!name||!user||!pass){alert('Fill in name, username and password.');return}
+  const agents=ga();
+  if(agents.find(a=>a.username===user)){alert('Username already taken.');return}
+  agents.push({name,username:user,password:pass,krisp,createdAt:Date.now()});
+  sa(agents);addN('Agent added',`${name} (@${user}) created`);
+  closeM('addModal');renderAgents();
+  ['mn','mu','mp','mk'].forEach(id=>G(id).value='');
+}
+function removeAgent(u){
+  if(!confirm('Remove agent? Their history stays.'))return;
+  sa(ga().filter(a=>a.username!==u));renderAgents();
+}
+</script>
+</body>
+</html>

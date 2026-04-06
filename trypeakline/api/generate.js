@@ -1,5 +1,4 @@
-const { getStore } = require("@netlify/blobs");
-const { connectLambda } = require("@netlify/blobs");
+const { getStore, connectLambda } = require("@netlify/blobs");
 
 exports.handler = async function (event) {
   if (event.httpMethod !== "POST") {
@@ -79,7 +78,7 @@ Return raw HTML only. Start with <!DOCTYPE html>`;
   try {
     connectLambda(event);
     const store = getStore({ name: "demos", consistency: "strong" });
-    await store.set(slug, htmlContent, { metadata: { contentType: "text/html", bizName, createdAt: new Date().toISOString() } });
+    await store.set(slug, htmlContent);
 
     return {
       statusCode: 200,

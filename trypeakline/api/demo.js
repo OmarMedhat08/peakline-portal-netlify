@@ -1,5 +1,4 @@
-const { getStore } = require("@netlify/blobs");
-const { connectLambda } = require("@netlify/blobs");
+const { getStore, connectLambda } = require("@netlify/blobs");
 
 exports.handler = async function (event) {
   const slug = event.path.replace(/^\/demo\//, "").replace(/\/$/, "");

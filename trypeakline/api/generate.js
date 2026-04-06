@@ -6,9 +6,14 @@ exports.handler = async function (event) {
   }
 
   const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+  const NETLIFY_TOKEN = process.env.NETLIFY_TOKEN;
+  const SITE_ID = process.env.SITE_ID;
 
   if (!ANTHROPIC_KEY) {
     return { statusCode: 500, body: JSON.stringify({ error: "Missing ANTHROPIC_API_KEY" }) };
+  }
+  if (!NETLIFY_TOKEN || !SITE_ID) {
+    return { statusCode: 500, body: JSON.stringify({ error: "Missing NETLIFY_TOKEN or SITE_ID" }) };
   }
 
   let body;
@@ -76,7 +81,11 @@ Return raw HTML only. Start with <!DOCTYPE html>`;
   }
 
   try {
-    const store = getStore("demos");
+    const store = getStore({
+      name: "demos",
+      siteID: SITE_ID,
+      token: NETLIFY_TOKEN
+    });
     await store.set(slug, htmlContent);
 
     return {

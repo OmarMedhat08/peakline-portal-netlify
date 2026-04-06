@@ -1,3 +1,9 @@
 [build]
   publish = "public"
   functions = "api"
+  command = "cd api && npm install"
+
+[[redirects]]
+  from = "/demo/*"
+  to = "/.netlify/functions/demo"
+  status = 200

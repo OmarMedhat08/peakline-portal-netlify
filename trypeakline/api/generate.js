@@ -72,7 +72,7 @@ Return raw HTML only. Start with <!DOCTYPE html>`;
       return { statusCode: 500, body: JSON.stringify({ error: "Invalid HTML from Claude" }) };
     }
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: "Claude fetch failed", detail: err.message }) };
+    return { statusCode: 500, body: JSON.stringify({ error: "Blob save failed", detail: err.message, stack: err.stack }) };
   }
 
   try {

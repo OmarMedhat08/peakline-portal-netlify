@@ -1,4 +1,4 @@
-const { getStore, connectLambda } = require("@netlify/blobs");
+const { getStore } = require("@netlify/blobs");
 
 exports.handler = async function (event) {
   const slug = event.path.replace(/^\/demo\//, "").replace(/\/$/, "");
@@ -12,8 +12,7 @@ exports.handler = async function (event) {
   }
 
   try {
-    connectLambda(event);
-    const store = getStore({ name: "demos", consistency: "strong" });
+    const store = getStore("demos");
     const html = await store.get(slug);
 
     if (!html) {

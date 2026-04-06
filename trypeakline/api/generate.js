@@ -71,8 +71,7 @@ Return raw HTML only. Start with <!DOCTYPE html>`;
     }
 
     const claudeData = await claudeRes.json();
-    htmlContent = claudeData.content[0]?.text;
-
+htmlContent = claudeData.content[0]?.text?.replace(/^```html\s*/i, "").replace(/```\s*$/i, "").trim();
     if (!htmlContent || !htmlContent.includes("<!DOCTYPE")) {
       return { statusCode: 500, body: JSON.stringify({ error: "Invalid HTML from Claude" }) };
     }

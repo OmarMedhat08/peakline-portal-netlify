@@ -733,7 +733,7 @@ async function genDemo(){
   let pct=0,step=0;
   const iv=setInterval(()=>{pct=Math.min(pct+1.2,88);pf.style.width=pct+'%';if(pct>step*22&&step<steps.length){ps.textContent=steps[step];step++}},200);
   try{
-    const res=await fetch('/api/generate',{
+    const res=await fetch('/.netlify/functions/generate',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({bizName:name,category:cat,city,state,notes:G('gno').value})

@@ -1,6 +1,9 @@
 const { getStore } = require("@netlify/blobs");
 
 exports.handler = async function (event) {
+  const NETLIFY_TOKEN = process.env.NETLIFY_TOKEN;
+  const SITE_ID = process.env.SITE_ID;
+
   const slug = event.path.replace(/^\/demo\//, "").replace(/\/$/, "");
 
   if (!slug) {
@@ -12,7 +15,11 @@ exports.handler = async function (event) {
   }
 
   try {
-    const store = getStore("demos");
+    const store = getStore({
+      name: "demos",
+      siteID: SITE_ID,
+      token: NETLIFY_TOKEN
+    });
     const html = await store.get(slug);
 
     if (!html) {

@@ -1,4 +1,4 @@
-const { getStore, connectLambda } = require("@netlify/blobs");
+const { getStore } = require("@netlify/blobs");
 
 exports.handler = async function (event) {
   if (event.httpMethod !== "POST") {
@@ -72,12 +72,11 @@ Return raw HTML only. Start with <!DOCTYPE html>`;
       return { statusCode: 500, body: JSON.stringify({ error: "Invalid HTML from Claude" }) };
     }
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: "Blob save failed", detail: err.message, stack: err.stack }) };
+    return { statusCode: 500, body: JSON.stringify({ error: "Claude fetch failed", detail: err.message }) };
   }
 
   try {
-    connectLambda(event);
-    const store = getStore({ name: "demos", consistency: "strong" });
+    const store = getStore("demos");
     await store.set(slug, htmlContent);
 
     return {
